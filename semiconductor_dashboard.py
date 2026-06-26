@@ -307,7 +307,7 @@ def build_report(data, sox):
 | DDR5 16Gb | ${dram_curr.get('DDR5_16Gb','—')} | ${DRAM_DATA.get(dram_keys[-2],{}).get('DDR5_16Gb','—') if len(dram_keys)>=2 else '—'} | {dram_curr.get('trend','—')} | TrendForce |
 | NAND Wafer | ${nand_curr.get('Wafer_512Gb','—')} | ${NAND_DATA.get(nand_keys[-2],{}).get('Wafer_512Gb','—') if len(nand_keys)>=2 else '—'} | {nand_curr.get('trend','—')} | TrendForce |
 
-> 📝 DRAM/NAND 需从 TrendForce 手动更新到 `DRAM_DATA` / `NAND_DATA` 字典
+> 📝 DRAM/NAND 需手动更新 | 数据源：[TrendForce DRAM](https://www.trendforce.com/price/dram) · [TrendForce NAND](https://www.trendforce.com/price/nand-flash)
 
 ---
 
@@ -321,7 +321,7 @@ def build_report(data, sox):
 |------|------|------|
 | {tsmc_3m:.0f}亿 | {tsmc_6m:.0f}亿 | {tsmc_accel} |
 
-> 绿灯条件：YoY>25% 且连续3月加速 → 当前: {"🟢" if tsmc_latest.get('yoy',0)>25 else "🟡"}
+> 绿灯条件：YoY>25% 且连续3月加速 → 当前: {"🟢" if tsmc_latest.get('yoy',0)>25 else "🟡"} | 数据源：[TSMC Monthly Revenue](https://investor.tsmc.com/english/monthly-revenue)
 
 ---
 
@@ -336,6 +336,8 @@ def build_report(data, sox):
 | HBM Outlook | 🟢 {MU_EARNINGS['hbm_outlook']} |
 | 详情 | {MU_EARNINGS['hbm_detail']} |
 
+> 数据源：[Micron IR](https://investors.micron.com/) · 每季度更新
+
 ---
 
 ## 🧠 四级：HBM 景气度
@@ -349,6 +351,8 @@ def build_report(data, sox):
 | 云厂商Capex增长 | {"🟢" if HBM_SCORE['cloud_capex_up'] else "—"} | +20 |
 | **总计** | | **{hbm_score}/100 → {hbm_verdict}** |
 
+> 数据源：[SK Hynix IR](https://www.skhynix.com/en/ir) · [NVIDIA IR](https://investor.nvidia.com/) · [TSMC CoWoS](https://investor.tsmc.com/)
+
 ---
 
 ## ☁️ 五级：云厂商 Capex
@@ -356,6 +360,8 @@ def build_report(data, sox):
 | 公司 | Capex增速 | 备注 |
 |------|------|------|
 {chr(10).join(cloud_rows)}
+
+> 数据源：[Microsoft IR](https://www.microsoft.com/en-us/Investor) · [Amazon IR](https://ir.aboutamazon.com/) · [Alphabet IR](https://abc.xyz/investor/) · 每季度更新
 
 ---
 
@@ -366,9 +372,19 @@ def build_report(data, sox):
 | {chr(10).join(f'- {s}' for s in sigs)} | **{score:+d}** → {verdict} |
 
 ---
-> 数据源：Yahoo Finance · TrendForce · TSMC · Micron · 自动生成 · 非投资建议
+> 自动生成 · 非投资建议
 
-[历史趋势需Obsidian Dataview实现，后续补充]
+### 数据源链接
+
+| 板块 | 来源 | 链接 |
+|------|------|------|
+| 芯片股价/ETF | Yahoo Finance | [NVDA](https://finance.yahoo.com/quote/NVDA/) · [SOX](https://finance.yahoo.com/quote/%5ESOX/) |
+| DRAM/NAND价格 | TrendForce | [DRAM](https://www.trendforce.com/price/dram) · [NAND](https://www.trendforce.com/price/nand-flash) |
+| TSMC月营收 | TSMC IR | [Monthly Revenue](https://investor.tsmc.com/english/monthly-revenue) |
+| MU财报 | Micron IR | [Earnings](https://investors.micron.com/) |
+| HBM景气度 | SK Hynix IR | [IR Page](https://www.skhynix.com/en/ir) |
+| NVIDIA指引 | NVIDIA IR | [IR Page](https://investor.nvidia.com/) |
+| 云Capex | MSFT·AMZN·GOOGL | [MSFT](https://www.microsoft.com/en-us/Investor) · [AMZN](https://ir.aboutamazon.com/) · [GOOGL](https://abc.xyz/investor/) |
 """
 
 # ═══════════════ 主流程 ═══════════════
