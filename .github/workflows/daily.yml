@@ -1,0 +1,33 @@
+name: Daily Semiconductor Dashboard
+
+on:
+  schedule:
+    - cron: "0 2 * * *"  # UTC 02:00 = 北京时间 10:00
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Run
+        run: python semiconductor_dashboard.py
+      - name: Show report
+        run: cat 半导体看板.md
+      - name: Commit & push
+        run: |
+          git config user.name "chip-bot"
+          git config user.email "bot@chip.local"
+          git add 半导体看板.md history/ 2>/dev/null || true
+          git commit -m "auto: update $(date +%Y-%m-%d)" || echo "No changes"
+          git pull --rebase origin main || true
+          git push || echo "Push failed"
