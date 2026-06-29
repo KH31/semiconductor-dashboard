@@ -76,23 +76,28 @@ CLOUD_CAPEX_LATEST = {
 
 # ═══════════════ 数据抓取 ═══════════════
 
+def _flatten(raw):
+    """确保返回Series，兼容yfinance的DataFrame/Series混返"""
+    if raw is None or raw.empty: return pd.Series(dtype=float)
+    s = raw["Close"].dropna() if "Close" in raw.columns else raw.squeeze().dropna()
+    if isinstance(s, pd.DataFrame): s = s.iloc[:, 0]
+    return s
+
 def fetch_all():
     data = {}
     for group in [CHIP_STOCKS, ETF_TICKERS, MACRO, CLOUD_CAPEX]:
         for name, tkr in group.items():
             try:
                 raw = yf.download(tkr, period="1y", progress=False, timeout=20)
-                if raw is not None and not raw.empty:
-                    c = raw["Close"].dropna() if "Close" in raw.columns else raw.squeeze().dropna()
-                    if len(c) > 20: data[name] = c
+                s = _flatten(raw)
+                if len(s) > 20: data[name] = s
             except: pass
     return data
 
 def fetch_sox():
     try:
         raw = yf.download("^SOX", period="3y", progress=False, timeout=20)
-        if raw is not None and not raw.empty:
-            return raw["Close"].dropna() if "Close" in raw.columns else raw.squeeze().dropna()
+        return _flatten(raw)
     except: pass
     return pd.Series(dtype=float)
 
